@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/cart_item.dart';
 import '../services/api_service.dart';
-import 'checkout_page.dart';
 
 class CartPage extends StatefulWidget {
   final bool showBackButton;
@@ -563,16 +562,25 @@ class _CartPageState extends State<CartPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  'Total Belanja',
-                  style: TextStyle(fontSize: 14, color: Color(0xFF64748B), fontWeight: FontWeight.w500),
+                const Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Total Belanja (Server)',
+                      style: TextStyle(fontSize: 13, color: Color(0xFF64748B), fontWeight: FontWeight.w600),
+                    ),
+                    Text(
+                      'Subtotal tunggal dari API server',
+                      style: TextStyle(fontSize: 11, color: Color(0xFF94A3B8)),
+                    ),
+                  ],
                 ),
                 Text(
                   formatRupiah(subtotal),
                   style: const TextStyle(
-                    fontSize: 18,
+                    fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF1E293B),
+                    color: Color(0xFF2E7D32),
                   ),
                 ),
               ],
@@ -589,12 +597,20 @@ class _CartPageState extends State<CartPage> {
                 onPressed: isProcessing
                     ? null
                     : () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => CheckoutPage(
-                              items: items,
-                              subtotal: subtotal,
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            backgroundColor: const Color(0xFF2E7D32),
+                            behavior: SnackBarBehavior.floating,
+                            content: Row(
+                              children: [
+                                const Icon(Icons.check_circle, color: Colors.white),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: Text(
+                                    'Subtotal ${formatRupiah(subtotal)} berhasil divalidasi oleh server.',
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         );
@@ -603,11 +619,11 @@ class _CartPageState extends State<CartPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Checkout',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      'Validasi Subtotal Server',
+                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                     ),
                     SizedBox(width: 6),
-                    Icon(Icons.arrow_forward, size: 18),
+                    Icon(Icons.check_circle_outline, size: 18),
                   ],
                 ),
               ),

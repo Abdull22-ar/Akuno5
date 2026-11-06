@@ -2,19 +2,20 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tokotani/main.dart';
 
 void main() {
-  testWidgets('Memverifikasi judul dan splash AgriMart', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
+  testWidgets('Memverifikasi judul dan navigasi utama terfokus Anggota 5', (WidgetTester tester) async {
+    // Membangun aplikasi TokoTani / AgriMart
     await tester.pumpWidget(const TokoTaniApp());
 
-    // Memverifikasi teks judul 'AgriMart' muncul pada Splash
+    // Memverifikasi teks judul 'AgriMart' muncul di AppBar
     expect(find.text('AgriMart'), findsWidgets);
 
-    // Selesaikan timer transisi splash
-    await tester.pumpAndSettle(const Duration(seconds: 3));
+    // Memverifikasi dua tab navigasi utama tugas Anggota 5
+    expect(find.text('Keranjang Belanja'), findsWidgets);
+    expect(find.text('Kelola Produk'), findsWidgets);
   });
 
-  testWidgets('Memverifikasi judul dan navigasi beranda TokoTani', (WidgetTester tester) async {
-    // Build menu tugas evaluator
+  testWidgets('Memverifikasi menu navigasi evaluasi Anggota 5', (WidgetTester tester) async {
+    // Membangun menu ringkasan tugas
     await tester.pumpWidget(const TokoTaniApp(home: MenuPage()));
 
     // Memverifikasi teks judul 'TokoTani' muncul

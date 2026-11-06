@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'pages/splash_page.dart';
 import 'pages/cart_page.dart';
 import 'pages/manage_product_page.dart';
 import 'pages/product_form_page.dart';
-import 'pages/main_shell_page.dart';
 import 'services/api_service.dart';
 
 void main() {
@@ -18,7 +16,7 @@ class TokoTaniApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'AgriMart - Belanja Cerdas, Dukung Pertanian',
+      title: 'AgriMart - TokoTani',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
@@ -39,8 +37,170 @@ class TokoTaniApp extends StatelessWidget {
           ),
         ),
       ),
-      // Default: Masuk ke alur Splash AgriMart sesuai desain UI/UX
-      home: home ?? const SplashPage(),
+      // Langsung membuka navigasi utama terfokus: Keranjang Belanja & Kelola Produk
+      home: home ?? const MainFocusedPage(),
+    );
+  }
+}
+
+/// Halaman Navigasi Utama yang berfokus tepat pada 2 tugas Anggota 5:
+/// 1. Keranjang Belanja (Subtotal server & Galat 409)
+/// 2. Kelola Produk (CRUD Lengkap dari dalam aplikasi)
+class MainFocusedPage extends StatefulWidget {
+  final int initialIndex;
+
+  const MainFocusedPage({super.key, this.initialIndex = 0});
+
+  @override
+  State<MainFocusedPage> createState() => _MainFocusedPageState();
+}
+
+class _MainFocusedPageState extends State<MainFocusedPage> {
+  late int _currentIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentIndex = widget.initialIndex;
+  }
+
+  final List<Widget> _pages = const [
+    CartPage(),
+    ManageProductsPage(),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF2E7D32),
+        foregroundColor: Colors.white,
+        elevation: 1,
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.2),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(Icons.eco, color: Colors.white, size: 20),
+            ),
+            const SizedBox(width: 8),
+            const Text(
+              'AgriMart',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 19,
+                letterSpacing: -0.3,
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          // Tombol Beralih Mode Jalur A (Laravel API) vs Jalur B (Data Tiruan Offline)
+          Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(20),
+              onTap: () {
+                setState(() {
+                  ApiService.useMock = !ApiService.useMock;
+                });
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    backgroundColor: ApiService.useMock ? Colors.orange.shade900 : const Color(0xFF2E7D32),
+                    behavior: SnackBarBehavior.floating,
+                    content: Text(
+                      ApiService.useMock
+                          ? 'Beralih ke Jalur B (Data Tiruan Offline)'
+                          : 'Beralih ke Jalur A (Server Laravel ${ApiService.baseUrl})',
+                    ),
+                    duration: const Duration(seconds: 2),
+                  ),
+                );
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: Colors.white.withValues(alpha: 0.4)),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      ApiService.useMock ? Icons.science_outlined : Icons.cloud_done_outlined,
+                      size: 15,
+                      color: Colors.white,
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      ApiService.useMock ? 'Mock Offline' : 'Laravel API',
+                      style: const TextStyle(
+                        fontSize: 11,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          // Tombol Buka Menu Evaluasi Rubrik
+          IconButton(
+            icon: const Icon(Icons.assignment_outlined, color: Colors.white),
+            tooltip: 'Ringkasan Tugas & Rubrik',
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const MenuPage()),
+              );
+            },
+          ),
+        ],
+      ),
+      body: IndexedStack(
+        index: _currentIndex,
+        children: _pages,
+      ),
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.06),
+              blurRadius: 10,
+              offset: const Offset(0, -3),
+            ),
+          ],
+        ),
+        child: SafeArea(
+          child: NavigationBar(
+            selectedIndex: _currentIndex,
+            onDestinationSelected: (index) => setState(() => _currentIndex = index),
+            backgroundColor: Colors.white,
+            elevation: 0,
+            indicatorColor: const Color(0xFFE8F5E9),
+            destinations: const [
+              NavigationDestination(
+                icon: Icon(Icons.shopping_cart_outlined),
+                selectedIcon: Icon(Icons.shopping_cart, color: Color(0xFF2E7D32)),
+                label: 'Keranjang Belanja',
+              ),
+              NavigationDestination(
+                icon: Icon(Icons.inventory_2_outlined),
+                selectedIcon: Icon(Icons.inventory_2, color: Color(0xFF2E7D32)),
+                label: 'Kelola Produk',
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
@@ -71,29 +231,6 @@ class _MenuPageState extends State<MenuPage> {
             ),
           ],
         ),
-        actions: [
-          FilledButton.tonal(
-            style: FilledButton.styleFrom(
-              backgroundColor: Colors.white.withValues(alpha: 0.2),
-              foregroundColor: Colors.white,
-            ),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const MainShellPage()),
-              );
-            },
-            child: const Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(Icons.phone_android, size: 16),
-                SizedBox(width: 4),
-                Text('AgriMart UI', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
-              ],
-            ),
-          ),
-          const SizedBox(width: 8),
-        ],
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),
