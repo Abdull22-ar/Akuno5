@@ -3,6 +3,7 @@ import 'pages/cart_page.dart';
 import 'pages/manage_product_page.dart';
 import 'pages/product_form_page.dart';
 import 'services/api_service.dart';
+import 'widgets/responsive_wrapper.dart';
 
 void main() {
   runApp(const TokoTaniApp());
@@ -76,6 +77,7 @@ class _MainFocusedPageState extends State<MainFocusedPage> {
         backgroundColor: const Color(0xFF2E7D32),
         foregroundColor: Colors.white,
         elevation: 1,
+        centerTitle: false,
         title: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -101,11 +103,11 @@ class _MainFocusedPageState extends State<MainFocusedPage> {
         ),
         actions: [
           // Tombol Beralih Mode Jalur A (Laravel API) vs Jalur B (Data Tiruan Offline)
-          Padding(
-            padding: const EdgeInsets.only(right: 8),
-            child: InkWell(
-              borderRadius: BorderRadius.circular(20),
-              onTap: () {
+          // Tampil adaptif: mode ringkas di layar sempit/mobile, mode badge penuh di desktop
+          Builder(
+            builder: (ctx) {
+              final isNarrow = MediaQuery.sizeOf(ctx).width < 500;
+              void toggleMode() {
                 setState(() {
                   ApiService.useMock = !ApiService.useMock;
                 });
@@ -121,35 +123,54 @@ class _MainFocusedPageState extends State<MainFocusedPage> {
                     duration: const Duration(seconds: 2),
                   ),
                 );
-              },
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.2),
+              }
+
+              if (isNarrow) {
+                return IconButton(
+                  icon: Icon(
+                    ApiService.useMock ? Icons.science_outlined : Icons.cloud_done_outlined,
+                    color: Colors.white,
+                  ),
+                  tooltip: ApiService.useMock ? 'Mode Mock Offline' : 'Mode Laravel API',
+                  onPressed: toggleMode,
+                );
+              }
+
+              return Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: InkWell(
                   borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: Colors.white.withValues(alpha: 0.4)),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      ApiService.useMock ? Icons.science_outlined : Icons.cloud_done_outlined,
-                      size: 15,
-                      color: Colors.white,
+                  onTap: toggleMode,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.2),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: Colors.white.withValues(alpha: 0.4)),
                     ),
-                    const SizedBox(width: 6),
-                    Text(
-                      ApiService.useMock ? 'Mock Offline' : 'Laravel API',
-                      style: const TextStyle(
-                        fontSize: 11,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          ApiService.useMock ? Icons.science_outlined : Icons.cloud_done_outlined,
+                          size: 15,
+                          color: Colors.white,
+                        ),
+                        const SizedBox(width: 6),
+                        Text(
+                          ApiService.useMock ? 'Mock Offline' : 'Laravel API',
+                          style: const TextStyle(
+                            fontSize: 11,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
-              ),
-            ),
+              );
+            },
           ),
           // Tombol Buka Menu Evaluasi Rubrik
           IconButton(
@@ -164,9 +185,11 @@ class _MainFocusedPageState extends State<MainFocusedPage> {
           ),
         ],
       ),
-      body: IndexedStack(
-        index: _currentIndex,
-        children: _pages,
+      body: ResponsiveScrollWrapper(
+        child: IndexedStack(
+          index: _currentIndex,
+          children: _pages,
+        ),
       ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
@@ -180,24 +203,29 @@ class _MainFocusedPageState extends State<MainFocusedPage> {
           ],
         ),
         child: SafeArea(
-          child: NavigationBar(
-            selectedIndex: _currentIndex,
-            onDestinationSelected: (index) => setState(() => _currentIndex = index),
-            backgroundColor: Colors.white,
-            elevation: 0,
-            indicatorColor: const Color(0xFFE8F5E9),
-            destinations: const [
-              NavigationDestination(
-                icon: Icon(Icons.shopping_cart_outlined),
-                selectedIcon: Icon(Icons.shopping_cart, color: Color(0xFF2E7D32)),
-                label: 'Keranjang Belanja',
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 640),
+              child: NavigationBar(
+                selectedIndex: _currentIndex,
+                onDestinationSelected: (index) => setState(() => _currentIndex = index),
+                backgroundColor: Colors.white,
+                elevation: 0,
+                indicatorColor: const Color(0xFFE8F5E9),
+                destinations: const [
+                  NavigationDestination(
+                    icon: Icon(Icons.shopping_cart_outlined),
+                    selectedIcon: Icon(Icons.shopping_cart, color: Color(0xFF2E7D32)),
+                    label: 'Keranjang Belanja',
+                  ),
+                  NavigationDestination(
+                    icon: Icon(Icons.inventory_2_outlined),
+                    selectedIcon: Icon(Icons.inventory_2, color: Color(0xFF2E7D32)),
+                    label: 'Kelola Produk',
+                  ),
+                ],
               ),
-              NavigationDestination(
-                icon: Icon(Icons.inventory_2_outlined),
-                selectedIcon: Icon(Icons.inventory_2, color: Color(0xFF2E7D32)),
-                label: 'Kelola Produk',
-              ),
-            ],
+            ),
           ),
         ),
       ),
@@ -232,8 +260,9 @@ class _MenuPageState extends State<MenuPage> {
           ],
         ),
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
+      body: ResponsiveScrollWrapper(
+        child: ListView(
+          padding: const EdgeInsets.all(16),
         children: [
           // Banner Identitas Bagian 5
           Card(
@@ -368,6 +397,7 @@ class _MenuPageState extends State<MenuPage> {
             ),
           ),
         ],
+      ),
       ),
     );
   }

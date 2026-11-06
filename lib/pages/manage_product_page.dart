@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/product.dart';
 import '../services/api_service.dart';
+import '../widgets/responsive_wrapper.dart';
 import 'product_form_page.dart';
 
 class ManageProductsPage extends StatefulWidget {
@@ -191,14 +192,16 @@ class _ManageProductsPageState extends State<ManageProductsPage> {
         icon: const Icon(Icons.add),
         label: const Text('Tambah Produk'),
       ),
-      body: Column(
-        children: [
-          // Bar Pencarian & Penyaring Kategori (Kriteria 2)
-          _buildFilterSection(),
-          const Divider(height: 1),
-          // Isi Layar Utama Berdasarkan 4 Keadaan Layar
-          Expanded(child: _buildBody()),
-        ],
+      body: ResponsiveScrollWrapper(
+        child: Column(
+          children: [
+            // Bar Pencarian & Penyaring Kategori (Kriteria 2)
+            _buildFilterSection(),
+            const Divider(height: 1),
+            // Isi Layar Utama Berdasarkan 4 Keadaan Layar
+            Expanded(child: _buildBody()),
+          ],
+        ),
       ),
     );
   }

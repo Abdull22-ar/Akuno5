@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/cart_item.dart';
 import '../services/api_service.dart';
+import '../widgets/responsive_wrapper.dart';
 
 class CartPage extends StatefulWidget {
   final bool showBackButton;
@@ -279,7 +280,7 @@ class _CartPageState extends State<CartPage> {
           ),
         ],
       ),
-      body: _buildBody(),
+      body: ResponsiveScrollWrapper(child: _buildBody()),
       bottomNavigationBar: state == KeadaanMuat.berhasil ? _buildBottomBar() : null,
     );
   }
@@ -544,7 +545,6 @@ class _CartPageState extends State<CartPage> {
 
   Widget _buildBottomBar() {
     return Container(
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [
@@ -556,79 +556,87 @@ class _CartPageState extends State<CartPage> {
         ],
       ),
       child: SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Total Belanja (Server)',
-                      style: TextStyle(fontSize: 13, color: Color(0xFF64748B), fontWeight: FontWeight.w600),
-                    ),
-                    Text(
-                      'Subtotal tunggal dari API server',
-                      style: TextStyle(fontSize: 11, color: Color(0xFF94A3B8)),
-                    ),
-                  ],
-                ),
-                Text(
-                  formatRupiah(subtotal),
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF2E7D32),
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 640),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Total Belanja (Server)',
+                            style: TextStyle(fontSize: 13, color: Color(0xFF64748B), fontWeight: FontWeight.w600),
+                          ),
+                          Text(
+                            'Subtotal tunggal dari API server',
+                            style: TextStyle(fontSize: 11, color: Color(0xFF94A3B8)),
+                          ),
+                        ],
+                      ),
+                      Text(
+                        formatRupiah(subtotal),
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF2E7D32),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            SizedBox(
-              width: double.infinity,
-              height: 48,
-              child: FilledButton(
-                style: FilledButton.styleFrom(
-                  backgroundColor: const Color(0xFF2E7D32),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                ),
-                onPressed: isProcessing
-                    ? null
-                    : () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            backgroundColor: const Color(0xFF2E7D32),
-                            behavior: SnackBarBehavior.floating,
-                            content: Row(
-                              children: [
-                                const Icon(Icons.check_circle, color: Colors.white),
-                                const SizedBox(width: 10),
-                                Expanded(
-                                  child: Text(
-                                    'Subtotal ${formatRupiah(subtotal)} berhasil divalidasi oleh server.',
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 48,
+                    child: FilledButton(
+                      style: FilledButton.styleFrom(
+                        backgroundColor: const Color(0xFF2E7D32),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      ),
+                      onPressed: isProcessing
+                          ? null
+                          : () {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  backgroundColor: const Color(0xFF2E7D32),
+                                  behavior: SnackBarBehavior.floating,
+                                  content: Row(
+                                    children: [
+                                      const Icon(Icons.check_circle, color: Colors.white),
+                                      const SizedBox(width: 10),
+                                      Expanded(
+                                        child: Text(
+                                          'Subtotal ${formatRupiah(subtotal)} berhasil divalidasi oleh server.',
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                              ],
-                            ),
+                              );
+                            },
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Validasi Subtotal Server',
+                            style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                           ),
-                        );
-                      },
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Validasi Subtotal Server',
-                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                          SizedBox(width: 6),
+                          Icon(Icons.check_circle_outline, size: 18),
+                        ],
+                      ),
                     ),
-                    SizedBox(width: 6),
-                    Icon(Icons.check_circle_outline, size: 18),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
-          ],
+          ),
         ),
       ),
     );

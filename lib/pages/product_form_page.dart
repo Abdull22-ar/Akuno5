@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/product.dart';
 import '../services/api_service.dart';
+import '../widgets/responsive_wrapper.dart';
 
 class ProductFormPage extends StatefulWidget {
   final Product? product;
@@ -178,10 +179,11 @@ class _ProductFormPageState extends State<ProductFormPage> {
       appBar: AppBar(
         title: Text(isEdit ? 'Ubah Produk Pertanian' : 'Tambah Produk Pertanian'),
       ),
-      body: Form(
-        key: formKey,
-        child: ListView(
-          padding: const EdgeInsets.all(16),
+      body: ResponsiveScrollWrapper(
+        child: Form(
+          key: formKey,
+          child: ListView(
+            padding: const EdgeInsets.all(16),
           children: [
             // Nama Produk
             TextFormField(
@@ -406,6 +408,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
             ),
           ],
         ),
+      ),
       ),
     );
   }
