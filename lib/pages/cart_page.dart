@@ -571,11 +571,11 @@ class _CartPageState extends State<CartPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Total Belanja (Server)',
-                            style: TextStyle(fontSize: 13, color: Color(0xFF64748B), fontWeight: FontWeight.w600),
+                            'Total Belanja',
+                            style: TextStyle(fontSize: 14, color: Color(0xFF64748B), fontWeight: FontWeight.w600),
                           ),
                           Text(
-                            'Subtotal tunggal dari API server',
+                            'Subtotal dari server',
                             style: TextStyle(fontSize: 11, color: Color(0xFF94A3B8)),
                           ),
                         ],
@@ -585,7 +585,7 @@ class _CartPageState extends State<CartPage> {
                         style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFF2E7D32),
+                          color: Color(0xFF1E293B),
                         ),
                       ),
                     ],
@@ -612,7 +612,7 @@ class _CartPageState extends State<CartPage> {
                                       const SizedBox(width: 10),
                                       Expanded(
                                         child: Text(
-                                          'Subtotal ${formatRupiah(subtotal)} berhasil divalidasi oleh server.',
+                                          'Subtotal ${formatRupiah(subtotal)} berhasil divalidasi oleh server. (Alur Checkout ditangani oleh Anggota 6)',
                                         ),
                                       ),
                                     ],
@@ -624,11 +624,11 @@ class _CartPageState extends State<CartPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            'Validasi Subtotal Server',
-                            style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                            'Checkout',
+                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                           ),
-                          SizedBox(width: 6),
-                          Icon(Icons.check_circle_outline, size: 18),
+                          SizedBox(width: 8),
+                          Icon(Icons.arrow_forward, size: 18),
                         ],
                       ),
                     ),

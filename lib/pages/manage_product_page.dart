@@ -218,23 +218,37 @@ class _ManageProductsPageState extends State<ManageProductsPage> {
             textInputAction: TextInputAction.search,
             decoration: InputDecoration(
               hintText: 'Cari produk pertanian...',
-              prefixIcon: const Icon(Icons.search),
+              hintStyle: const TextStyle(color: Color(0xFF94A3B8), fontSize: 14),
+              prefixIcon: const Icon(Icons.search, color: Color(0xFF64748B)),
               suffixIcon: searchController.text.isNotEmpty
                   ? IconButton(
-                      icon: const Icon(Icons.clear),
+                      icon: const Icon(Icons.clear, size: 18),
                       onPressed: () {
                         searchController.clear();
                         loadProducts();
                       },
                     )
                   : null,
+              filled: true,
+              fillColor: const Color(0xFFF8FAFC),
               contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: const BorderSide(color: Color(0xFF2E7D32), width: 1.5),
+              ),
             ),
             onSubmitted: (_) => loadProducts(),
           ),
-          const SizedBox(height: 8),
-          // Pilihan Kategori (Filter Chip)
+          const SizedBox(height: 10),
+          // Pilihan Kategori (Filter Chip) Sesuai Desain UI AgriMart
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
@@ -245,11 +259,17 @@ class _ManageProductsPageState extends State<ManageProductsPage> {
                   child: FilterChip(
                     label: Text(cat),
                     selected: isSelected,
-                    selectedColor: Colors.green.shade100,
-                    checkmarkColor: Colors.green.shade800,
+                    showCheckmark: false,
+                    backgroundColor: Colors.white,
+                    selectedColor: const Color(0xFF2E7D32),
+                    side: BorderSide(
+                      color: isSelected ? const Color(0xFF2E7D32) : const Color(0xFFE2E8F0),
+                    ),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                     labelStyle: TextStyle(
-                      color: isSelected ? Colors.green.shade900 : Colors.black87,
-                      fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                      color: isSelected ? Colors.white : const Color(0xFF475569),
+                      fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                      fontSize: 13,
                     ),
                     onSelected: (val) {
                       setState(() => selectedKategori = cat);
